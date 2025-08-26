@@ -53,15 +53,15 @@ function draw() {
     
     // Adjust layout for mobile: vertical stack if width < 600
     if (width < 600) {
-      drawOption('rock', width / 2, height / 2 - 200 * scaleFactor, scaleFactor); // Increased spacing
+      drawOption('rock', width / 2, height / 2 - 150 * scaleFactor, scaleFactor); // Increased spacing
       drawOption('paper', width / 2, height / 2, scaleFactor);
-      drawOption('scissors', width / 2, height / 2 + 200 * scaleFactor, scaleFactor); // Increased spacing
+      drawOption('scissors', width / 2, height / 2 + 150 * scaleFactor, scaleFactor); // Increased spacing
     } else {
-      drawOption('rock', width / 5, height / 2 + 100 * scaleFactor, scaleFactor); // Increased horizontal spacing
+      drawOption('rock', width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
       drawOption('paper', width / 2, height / 2 + 50 * scaleFactor, scaleFactor);
-      drawOption('scissors', 4 * width / 5, height / 2 + 100 * scaleFactor, scaleFactor); // Increased horizontal spacing
+      drawOption('scissors', 4 * width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
     }
-  } else if (gameState === 'reveal') {
+  } else if (gameState = 'reveal') {
     fill(50);
     text('VS', width / 2, height / 2);
     
@@ -98,12 +98,12 @@ function draw() {
       text("Computer Wins!", width / 2, 80 * scaleFactor);
     }
     
-    // Play again button
-    let againHover = isOverButton(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor);
+    // Play again button - moved higher to avoid score overlap
+    let againHover = isOverButton(width / 2, height - 120 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor);
     fill(againHover ? 100 : 150, 200, 100);
-    rect(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor, 20 * scaleFactor);
+    rect(width / 2, height - 120 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor, 20 * scaleFactor);
     fill(255);
-    text('Play Again', width / 2, height - 70 * scaleFactor);
+    text('Play Again', width / 2, height - 120 * scaleFactor);
   }
 }
 
@@ -147,7 +147,7 @@ function handleInteraction() {
       }
     }
   } else if (gameState === 'result') {
-    if (isOverButton(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor)) {
+    if (isOverButton(width / 2, height - 120 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor)) {
       gameState = 'choose';
       playerChoice = null;
       computerChoice = null;
