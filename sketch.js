@@ -53,13 +53,13 @@ function draw() {
     
     // Adjust layout for mobile: vertical stack if width < 600
     if (width < 600) {
-      drawOption('rock', width / 2, height / 2 - 100 * scaleFactor, scaleFactor);
+      drawOption('rock', width / 2, height / 2 - 150 * scaleFactor, scaleFactor); // Increased spacing
       drawOption('paper', width / 2, height / 2, scaleFactor);
-      drawOption('scissors', width / 2, height / 2 + 100 * scaleFactor, scaleFactor);
+      drawOption('scissors', width / 2, height / 2 + 150 * scaleFactor, scaleFactor); // Increased spacing
     } else {
-      drawOption('rock', width / 4, height / 2 + 50 * scaleFactor, scaleFactor);
+      drawOption('rock', width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
       drawOption('paper', width / 2, height / 2 + 50 * scaleFactor, scaleFactor);
-      drawOption('scissors', 3 * width / 4, height / 2 + 50 * scaleFactor, scaleFactor);
+      drawOption('scissors', 4 * width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
     }
   } else if (gameState === 'reveal') {
     fill(50);
@@ -124,24 +124,24 @@ function handleInteraction() {
     }
   } else if (gameState === 'choose') {
     if (width < 600) {
-      if (isOverOption(width / 2, height / 2 - 100 * scaleFactor, scaleFactor)) {
+      if (isOverOption(width / 2, height / 2 - 150 * scaleFactor, scaleFactor)) {
         playerChoice = 'rock';
         startReveal();
       } else if (isOverOption(width / 2, height / 2, scaleFactor)) {
         playerChoice = 'paper';
         startReveal();
-      } else if (isOverOption(width / 2, height / 2 + 100 * scaleFactor, scaleFactor)) {
+      } else if (isOverOption(width / 2, height / 2 + 150 * scaleFactor, scaleFactor)) {
         playerChoice = 'scissors';
         startReveal();
       }
     } else {
-      if (isOverOption(width / 4, height / 2 + 50 * scaleFactor, scaleFactor)) {
+      if (isOverOption(width / 5, height / 2 + 50 * scaleFactor, scaleFactor)) {
         playerChoice = 'rock';
         startReveal();
       } else if (isOverOption(width / 2, height / 2 + 50 * scaleFactor, scaleFactor)) {
         playerChoice = 'paper';
         startReveal();
-      } else if (isOverOption(3 * width / 4, height / 2 + 50 * scaleFactor, scaleFactor)) {
+      } else if (isOverOption(4 * width / 5, height / 2 + 50 * scaleFactor, scaleFactor)) {
         playerChoice = 'scissors';
         startReveal();
       }
