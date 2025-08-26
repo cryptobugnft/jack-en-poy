@@ -61,7 +61,7 @@ function draw() {
       drawOption('paper', width / 2, height / 2 + 50 * scaleFactor, scaleFactor);
       drawOption('scissors', 4 * width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
     }
-  } else if (gameState = 'reveal') {
+  } else if (gameState === 'reveal') {
     fill(50);
     text('VS', width / 2, height / 2);
     
@@ -76,8 +76,8 @@ function draw() {
     textSize(32 * scaleFactor);
     
     if (frameCount - timer > 90) { // 1.5 seconds delay
-      winner = determineWinner();
       gameState = 'result';
+      winner = determineWinner(); // Call determineWinner once during state transition
     }
   } else if (gameState === 'result') {
     drawEmoji(playerChoice, width / 4, height / 2, scaleFactor);
@@ -98,7 +98,7 @@ function draw() {
       text("Computer Wins!", width / 2, 80 * scaleFactor);
     }
     
-    // Play again button - moved higher to avoid score overlap
+    // Play again button - positioned to avoid score overlap
     let againHover = isOverButton(width / 2, height - 120 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor);
     fill(againHover ? 100 : 150, 200, 100);
     rect(width / 2, height - 120 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor, 20 * scaleFactor);
