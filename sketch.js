@@ -6,109 +6,148 @@ let computerScore = 0;
 let gameState = 'start';
 let timer;
 let choices = ['rock', 'paper', 'scissors'];
+let emojiMap = {
+  'rock': '✊',
+  'paper': '🖐️',
+  'scissors': '✌️'
+};
 
 function setup() {
-  createCanvas(800, 600);
-  textAlign(CENTER);
+  createCanvas(windowWidth, windowHeight); // Use full window size for mobile
+  textAlign(CENTER, CENTER);
   textSize(32);
   rectMode(CENTER);
-  ellipseMode(CENTER);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight); // Resize canvas on window change
 }
 
 function draw() {
   background(240, 240, 255); // Light blue-ish background for polish
   
+  // Scale text and elements based on screen width
+  let scaleFactor = min(width / 800, 1); // Base on 800px width
+  textSize(32 * scaleFactor);
+  
   if (gameState !== 'start') {
     fill(100);
-    textSize(24);
-    text(`Player: ${playerScore}   Computer: ${computerScore}`, width / 2, height - 30);
-    textSize(32);
+    textSize(24 * scaleFactor);
+    text(`Player: ${playerScore}   Computer: ${computerScore}`, width / 2, height - 30 * scaleFactor);
+    textSize(32 * scaleFactor);
   }
   
   if (gameState === 'start') {
     fill(50);
-    text('Rock Paper Scissors', width / 2, height / 2 - 100);
+    text('Rock Paper Scissors', width / 2, height / 2 - 100 * scaleFactor);
     
-    // Play button with hover effect
-    let playHover = mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 20 && mouseY < height / 2 + 80;
+    // Play button with hover/touch effect
+    let playHover = isOverButton(width / 2, height / 2 + 50 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor);
     fill(playHover ? 100 : 150, 200, 100);
-    rect(width / 2, height / 2 + 50, 200, 60, 20);
+    rect(width / 2, height / 2 + 50 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor, 20 * scaleFactor);
     fill(255);
-    text('Play', width / 2, height / 2 + 60);
+    text('Play', width / 2, height / 2 + 50 * scaleFactor);
   } else if (gameState === 'choose') {
     fill(50);
-    text('Choose Your Move', width / 2, 80);
+    text('Choose Your Move', width / 2, 80 * scaleFactor);
     
-    drawOption('rock', width / 4, height / 2 + 50);
-    drawOption('paper', width / 2, height / 2 + 50);
-    drawOption('scissors', 3 * width / 4, height / 2 + 50);
+    // Adjust layout for mobile: vertical stack if width < 600
+    if (width < 600) {
+      drawOption('rock', width / 2, height / 2 - 100 * scaleFactor, scaleFactor);
+      drawOption('paper', width / 2, height / 2, scaleFactor);
+      drawOption('scissors', width / 2, height / 2 + 100 * scaleFactor, scaleFactor);
+    } else {
+      drawOption('rock', width / 4, height / 2 + 50 * scaleFactor, scaleFactor);
+      drawOption('paper', width / 2, height / 2 + 50 * scaleFactor, scaleFactor);
+      drawOption('scissors', 3 * width / 4, height / 2 + 50 * scaleFactor, scaleFactor);
+    }
   } else if (gameState === 'reveal') {
     fill(50);
     text('VS', width / 2, height / 2);
     
-    let shake = sin(frameCount * 0.3) * 5;
-    drawHand('closed', width / 4 + shake, height / 2);
-    drawHand('closed', 3 * width / 4 - shake, height / 2);
+    let shake = sin(frameCount * 0.3) * 5 * scaleFactor;
+    drawEmoji('rock', width / 4 + shake, height / 2, scaleFactor); // Use rock emoji for closed hand
+    drawEmoji('rock', 3 * width / 4 - shake, height / 2, scaleFactor);
     
     fill(100);
-    textSize(20);
-    text('You', width / 4, height / 2 + 150);
-    text('Computer', 3 * width / 4, height / 2 + 150);
-    textSize(32);
+    textSize(20 * scaleFactor);
+    text('You', width / 4, height / 2 + 150 * scaleFactor);
+    text('Computer', 3 * width / 4, height / 2 + 150 * scaleFactor);
+    textSize(32 * scaleFactor);
     
     if (frameCount - timer > 90) { // 1.5 seconds delay
       winner = determineWinner();
       gameState = 'result';
     }
   } else if (gameState === 'result') {
-    drawHand(playerChoice, width / 4, height / 2);
-    drawHand(computerChoice, 3 * width / 4, height / 2);
+    drawEmoji(playerChoice, width / 4, height / 2, scaleFactor);
+    drawEmoji(computerChoice, 3 * width / 4, height / 2, scaleFactor);
     
     fill(100);
-    textSize(20);
-    text('You', width / 4, height / 2 + 150);
-    text('Computer', 3 * width / 4, height / 2 + 150);
-    textSize(32);
+    textSize(20 * scaleFactor);
+    text('You', width / 4, height / 2 + 150 * scaleFactor);
+    text('Computer', 3 * width / 4, height / 2 + 150 * scaleFactor);
+    textSize(32 * scaleFactor);
     
     fill(50);
     if (winner === 'tie') {
-      text("It's a Tie!", width / 2, 80);
+      text("It's a Tie!", width / 2, 80 * scaleFactor);
     } else if (winner === 'player') {
-      text("You Win!", width / 2, 80);
+      text("You Win!", width / 2, 80 * scaleFactor);
     } else {
-      text("Computer Wins!", width / 2, 80);
+      text("Computer Wins!", width / 2, 80 * scaleFactor);
     }
     
-    // Play again button with hover effect
-    let againHover = mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height - 100 && mouseY < height - 40;
+    // Play again button
+    let againHover = isOverButton(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor);
     fill(againHover ? 100 : 150, 200, 100);
-    rect(width / 2, height - 70, 200, 60, 20);
+    rect(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor, 20 * scaleFactor);
     fill(255);
-    text('Play Again', width / 2, height - 60);
+    text('Play Again', width / 2, height - 70 * scaleFactor);
   }
 }
 
 function mousePressed() {
+  handleInteraction();
+}
+
+function touchStarted() {
+  handleInteraction();
+  return false; // Prevent default touch behavior
+}
+
+function handleInteraction() {
+  let scaleFactor = min(width / 800, 1);
   if (gameState === 'start') {
-    let playHover = mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height / 2 + 20 && mouseY < height / 2 + 80;
-    if (playHover) {
+    if (isOverButton(width / 2, height / 2 + 50 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor)) {
       gameState = 'choose';
     }
   } else if (gameState === 'choose') {
-    // Check clicks on options
-    if (isOverOption(width / 4, height / 2 + 50)) {
-      playerChoice = 'rock';
-      startReveal();
-    } else if (isOverOption(width / 2, height / 2 + 50)) {
-      playerChoice = 'paper';
-      startReveal();
-    } else if (isOverOption(3 * width / 4, height / 2 + 50)) {
-      playerChoice = 'scissors';
-      startReveal();
+    if (width < 600) {
+      if (isOverOption(width / 2, height / 2 - 100 * scaleFactor, scaleFactor)) {
+        playerChoice = 'rock';
+        startReveal();
+      } else if (isOverOption(width / 2, height / 2, scaleFactor)) {
+        playerChoice = 'paper';
+        startReveal();
+      } else if (isOverOption(width / 2, height / 2 + 100 * scaleFactor, scaleFactor)) {
+        playerChoice = 'scissors';
+        startReveal();
+      }
+    } else {
+      if (isOverOption(width / 4, height / 2 + 50 * scaleFactor, scaleFactor)) {
+        playerChoice = 'rock';
+        startReveal();
+      } else if (isOverOption(width / 2, height / 2 + 50 * scaleFactor, scaleFactor)) {
+        playerChoice = 'paper';
+        startReveal();
+      } else if (isOverOption(3 * width / 4, height / 2 + 50 * scaleFactor, scaleFactor)) {
+        playerChoice = 'scissors';
+        startReveal();
+      }
     }
   } else if (gameState === 'result') {
-    let againHover = mouseX > width / 2 - 100 && mouseX < width / 2 + 100 && mouseY > height - 100 && mouseY < height - 40;
-    if (againHover) {
+    if (isOverButton(width / 2, height - 70 * scaleFactor, 200 * scaleFactor, 60 * scaleFactor)) {
       gameState = 'choose';
       playerChoice = null;
       computerChoice = null;
@@ -139,71 +178,27 @@ function determineWinner() {
   }
 }
 
-function drawOption(choice, x, y) {
-  let hover = isOverOption(x, y);
+function drawOption(choice, x, y, scaleFactor) {
+  let hover = isOverOption(x, y, scaleFactor);
   fill(hover ? 200 : 255, 220, 255);
-  rect(x, y, 150, 200, 20);
-  drawHand(choice, x, y - 20);
+  rect(x, y, 150 * scaleFactor, 200 * scaleFactor, 20 * scaleFactor);
+  drawEmoji(choice, x, y - 20 * scaleFactor, scaleFactor);
   fill(50);
-  textSize(24);
-  text(choice.charAt(0).toUpperCase() + choice.slice(1), x, y + 110);
-  textSize(32);
+  textSize(24 * scaleFactor);
+  text(choice.charAt(0).toUpperCase() + choice.slice(1), x, y + 110 * scaleFactor);
+  textSize(32 * scaleFactor);
 }
 
-function isOverOption(x, y) {
-  return mouseX > x - 75 && mouseX < x + 75 && mouseY > y - 100 && mouseY < y + 100;
+function drawEmoji(choice, x, y, scaleFactor) {
+  textSize(80 * scaleFactor);
+  text(emojiMap[choice], x, y);
+  textSize(32 * scaleFactor);
 }
 
-function drawHand(choice, x, y) {
-  noStroke();
-  fill(255, 224, 189); // Skin color
-  
-  // Arm/wrist for all
-  rect(x, y + 80, 50, 120, 20);
-  
-  if (choice === 'closed' || choice === 'rock') {
-    // Fist
-    ellipse(x, y + 20, 80, 80);
-    // Thumb overlay
-    push();
-    translate(x - 40, y + 20);
-    rotate(-PI / 6);
-    ellipse(0, 0, 40, 60);
-    pop();
-  } else if (choice === 'paper') {
-    // Flat hand (palm)
-    rect(x, y, 100, 90, 20);
-    // Finger separations (lines)
-    stroke(200, 150, 100);
-    strokeWeight(2);
-    line(x - 40, y - 45, x - 40, y + 45);
-    line(x - 15, y - 45, x - 15, y + 45);
-    line(x + 15, y - 45, x + 15, y + 45);
-    line(x + 40, y - 45, x + 40, y + 45);
-    noStroke();
-  } else if (choice === 'scissors') {
-    // Palm base
-    ellipse(x, y + 30, 70, 70);
-    // Index and middle fingers (blades)
-    push();
-    translate(x - 15, y - 30);
-    rotate(-PI / 12);
-    rect(0, 0, 25, 100, 10);
-    pop();
-    push();
-    translate(x + 15, y - 30);
-    rotate(PI / 12);
-    rect(0, 0, 25, 100, 10);
-    pop();
-    // Thumb
-    push();
-    translate(x - 40, y + 40);
-    rotate(PI / 3);
-    rect(0, 0, 25, 60, 10);
-    pop();
-  }
-  
-  // Add subtle shadow for polish
-  fill(0, 0, 0, 50);
-  ellipse(x + 10, y + 100, 60, 20); // Shadow under arm
+function isOverOption(x, y, scaleFactor) {
+  return dist(mouseX, mouseY, x, y) < 75 * scaleFactor;
+}
+
+function isOverButton(x, y, w, h) {
+  return mouseX > x - w / 2 && mouseX < x + w / 2 && mouseY > y - h / 2 && mouseY < y + h / 2;
 }
