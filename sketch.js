@@ -53,13 +53,13 @@ function draw() {
     
     // Adjust layout for mobile: vertical stack if width < 600
     if (width < 600) {
-      drawOption('rock', width / 2, height / 2 - 150 * scaleFactor, scaleFactor); // Increased spacing
+      drawOption('rock', width / 2, height / 2 - 200 * scaleFactor, scaleFactor); // Increased spacing
       drawOption('paper', width / 2, height / 2, scaleFactor);
-      drawOption('scissors', width / 2, height / 2 + 150 * scaleFactor, scaleFactor); // Increased spacing
+      drawOption('scissors', width / 2, height / 2 + 200 * scaleFactor, scaleFactor); // Increased spacing
     } else {
-      drawOption('rock', width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
+      drawOption('rock', width / 5, height / 2 + 100 * scaleFactor, scaleFactor); // Increased horizontal spacing
       drawOption('paper', width / 2, height / 2 + 50 * scaleFactor, scaleFactor);
-      drawOption('scissors', 4 * width / 5, height / 2 + 50 * scaleFactor, scaleFactor); // Increased horizontal spacing
+      drawOption('scissors', 4 * width / 5, height / 2 + 100 * scaleFactor, scaleFactor); // Increased horizontal spacing
     }
   } else if (gameState === 'reveal') {
     fill(50);
